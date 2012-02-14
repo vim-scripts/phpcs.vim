@@ -1,0 +1,32 @@
+This is a mirror of http://www.vim.org/scripts/script.php?script_id=3928
+
+This plugin relies on PHP_CodeSniffer package.It parse the result of phpcs and redirect it into vim's quickfix buffer.
+So users can navigate the codding rule error place use ':cnext' and ':cprev'.
+PHP_CodeSniffer is a utility developed for checking codding rules for PHP scripts.
+For more information about PHP_CodeSniffer, see http://pear.php.net/package/PHP_CodeSniffer/
+
+To use this plugin, you must have these global variables set:
+ 1. The list of coding rule standards to follow, with each one seperated by comma.                                                        
+     let g:phpcs_std_list="Zend, PEAR"
+ 
+ 2. Your VCS type(Only needed when running 'Phpcs commit')
+     let g:phpcs_vcs_type = 'svn'
+
+     Currently only support 'svn' or  'cvs'.
+
+ 3. Set the max allowed output lines. 
+     This is useful in case there are too many errors and memory is running out.
+    
+      let g:phpcs_max_output = 0 " Unlimited output.
+      or
+      let g:phpcs_max_output = 2000 " Output limited to 2000 line
+
+Following command are provided:
+
+:Phpcs          " Checking current editing file, if not in DIFF mode.
+                       Checking the modified lines only, if in DIFF mode. 
+                       In DIFF mode, repeatedly call :Phpcs will switch between the DIFF view and the Phpcs checking view.
+ :Phpcs commit   " Checking PHP  files to be commited in the directory recursively
+ :Phpcs all           " Checking PHP files in the current directory recursively
+
+
