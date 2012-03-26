@@ -23,10 +23,32 @@ To use this plugin, you must have these global variables set:
 
 Following command are provided:
 
-:Phpcs          " Checking current editing file, if not in DIFF mode.
-                       Checking the modified lines only, if in DIFF mode. 
-                       In DIFF mode, repeatedly call :Phpcs will switch between the DIFF view and the Phpcs checking view.
+ :Phpcs          " Check the current file, if not in DIFF mode.
+                       "  Check the modified lines only, if in DIFF mode. And in DIFF mode, call  :Phpcs twice, it will switch back and update the DIFF view.
  :Phpcs commit   " Checking PHP  files to be commited in the directory recursively
  :Phpcs all           " Checking PHP files in the current directory recursively
 
+You can map shortcuts for your convenience. For example, in my working environment, we do following mappings:
+" input mode map
+inoremap <F5>  <ESC>:Phpcs<CR>
+inoremap <F7> <ESC>:cprev<CR>
+inoremap <F8> <ESC>:cnext<CR>
 
+"normal mode map
+noremap <F5>  <ESC>:Phpcs<CR>
+noremap <F7> <Esc>:cprev<CR>
+noremap <F8> <ESC>:cnext<CR>
+
+Note for the Phpcs in DIFF mode:
+1. Why support Phpcs in DIFF mode?
+Due to historical reasons, there exist a lot of old codes not following the new coding standards. Our policy is that, for the new codes added, must following the coding standards; but keep the old codes as it is.
+So we only need to check the new codes to be committed. 
+
+2. Which scenario does this mode work?
+In this scenario, we use vimdiff for the extra diff command of svn diff. Before we commit the codes, we run svn diff, which in turn will call vimdiff to show what has been changed in codes.
+Here we call :Phpcs command, to do the checking, and that will only output errors/warning in the lines modified in this commit.
+
+3. The Phpcs in DIFF mode is not flexible!
+You should make sure that:  ONLY TWO WINDOWS EXIST IN DIFF VIEW, THE 1ST ONE IS THE ORIGINAL FILE, THE 2ND ONE IS THE MODIFIED FILE.
+If you use other plugins and they open windows automatically in vimdiff mode, you should close it first manually or add codes to do this in phpcs.vim.
+In the 1.1 version, I added codes to detect MiniBufExpl plugin, and close it automatically. Just for your reference.

@@ -7,10 +7,9 @@
 "   GVIM Version:  7.0+
 "
 "         Author:  Kai ZHANG
-"          Email:  kzhang@streamwide.com
+"          Email:  longbowk@yeah.net
 "
-"        Version:  1.0
-"        Created:  2/14/2012
+"        Version:  1.1
 "        License:  
 "                  This program is free software; you can redistribute it and/or
 "                  modify it under the terms of the GNU General Public License as
@@ -42,13 +41,9 @@
 "
 "                       let g:phpcs_max_output = 2000 " Output limited to 2000 lines
 "------------------------------------------------------------------------------
-" Usage:
-"    :Phpcs          " Checking current editing file, or check modified lines
-"                      only. Depending on the DIFF mode on/off.
-"                      In DIFF mode, repeatedly call :Phpcs will switch
-"                      between the DIFF view and the Phpcs checking view.
-"    :Phpcs commit   " Checking files to be commited in the directory recursively
-"    :Phpcs all      " Checking files in the directory recursively
+"  Modification History:
+"  1.1  Fixed the issue that when minibufexpl plugin enabled, the window operation is totally wrong in DIFF mode. 
+"  1.0  Initial release.
 "------------------------------------------------------------------------------
 
 if exists('g:loaded_phpcs_plugin')
@@ -195,6 +190,17 @@ function! phpcs#phpcsCheck(...)
         if !&diff
             let fname_list = add(fname_list, @%)
         else
+            " Make sure there is only 2 windows exists in diff view:
+            "  * the 1st window displays the original file
+            "  * the 2nd window displays the modified file.
+            " So we can use the wincmd with number(1,2) directly.
+            " If you have plugins open extra window by default, you should
+            " close these window here.
+            " Some people use MiniBufExplorer plugin, so close it first.
+            if exists(':CMiniBufExplorer') 
+                execute 'CMiniBufExplorer'
+            endif
+
             if exists('g:phpcs_checking')
                 vsplit
                 execute '1' . 'wincmd w'
@@ -246,15 +252,3 @@ endfunction
 
 " Define the Phpcs command
 command! -nargs=? Phpcs call phpcs#phpcsCheck(<f-args>)
-
-" input mode map
-" inoremap <F5>  <ESC>:Phpcs<CR>
-" inoremap <F7> <ESC>:cprev<CR>
-" inoremap <F8> <ESC>:cnext<CR>
-
-" normal mode map
-" noremap <F5>  <ESC>:Phpcs<CR>
-" noremap <F7> <Esc>:cprev<CR>
-" noremap <F8> <ESC>:cnext<CR>
-
-set cursorline
